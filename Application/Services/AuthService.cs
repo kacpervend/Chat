@@ -26,12 +26,12 @@ namespace Application.Services
         {
             try
             {
-                var existingLogin = await _repository.GetByLogin(dto.Login);
+                var existingLogin = await _repository.GetByUsername(dto.Username);
 
                 if (existingLogin != null)
                 {
-                    _logger.LogWarning($"Login: '{dto.Login}' is already taken!");
-                    throw new InvalidOperationException($"Login: '{dto.Login}' is already taken!");
+                    _logger.LogWarning($"Username: '{dto.Username}' is already taken!");
+                    throw new InvalidOperationException($"Username: '{dto.Username}' is already taken!");
                 }
 
                 var user = _mapper.Map<User>(dto);
@@ -45,7 +45,7 @@ namespace Application.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"An error occurred while adding user with login: '{dto.Login}'");
+                _logger.LogError(ex, $"An error occurred while adding user with name: '{dto.Username}'");
                 throw;
             }
         }

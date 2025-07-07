@@ -30,15 +30,15 @@ namespace Infrastructure.Repositories
             }
         }
 
-        public async Task<User> GetByLogin(string login)
+        public async Task<User> GetByUsername(string username)
         {
             try
             {
-                return await _dbContext.User.FirstOrDefaultAsync(x => x.Login == login);
+                return await _dbContext.User.FirstOrDefaultAsync(x => x.Username == username);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"An error occured while geting user with name: '{login}'");
+                _logger.LogError(ex, $"An error occured while geting user with name: '{username}'");
                 throw;
             }
         }
@@ -52,7 +52,7 @@ namespace Infrastructure.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"An error occured while adding user with login: '{user.Login}'");
+                _logger.LogError(ex, $"An error occured while adding user with username: '{user.Username}'");
                 throw;
             }
         }

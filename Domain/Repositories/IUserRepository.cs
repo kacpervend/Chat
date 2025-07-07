@@ -5,7 +5,7 @@ namespace Domain.Repositories
     public interface IUserRepository
     {
         Task<User> GetById(Guid id);
-        Task<User> GetByLogin(string login);
+        Task<User> GetByUsername(string username);
         Task Add(User user);
     }
 }

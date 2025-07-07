@@ -18,7 +18,7 @@ namespace API.Controllers
             _logger = logger;
         }
 
-        [HttpPost("Register")]
+        [HttpPut("register")]
         public async Task<IActionResult> Register([FromBody]RegisterUserDTO dto)
         {
             try
@@ -29,12 +29,12 @@ namespace API.Controllers
             }
             catch (InvalidOperationException invalidOperationException)
             {
-                _logger.LogWarning(invalidOperationException, $"Login: '{dto.Login}' is already taken!");
+                _logger.LogWarning(invalidOperationException, $"Username: '{dto.Username}' is already taken!");
                 return Conflict(invalidOperationException.Message);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"An unexpected error occurred during registration of user with login: '{dto.Login}'");
+                _logger.LogError(ex, $"An unexpected error occurred during registration of user with name: '{dto.Username}'");
                 return StatusCode(500, "An unexpected error occurred during registration!");
             }
         }
