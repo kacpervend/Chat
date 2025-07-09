@@ -38,5 +38,29 @@ namespace API.Controllers
                 return StatusCode(500, "An unexpected error occurred during registration!");
             }
         }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDTO dto)
+        {
+            try
+            {
+                var authData = await _authService.GenerateToken(dto);
+
+                return Ok(authData);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"An error occurred during login for user: '{dto.Username}'");
+                return StatusCode(500, "An unexpected error occurred!");
+            }
+        }
     }
 }

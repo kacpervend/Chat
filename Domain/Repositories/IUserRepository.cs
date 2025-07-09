@@ -7,5 +7,6 @@ namespace Domain.Repositories
         Task<User> GetById(Guid id);
         Task<User> GetByUsername(string username);
         Task Add(User user);
+        string GenerateToken(User user);
     }
 }
