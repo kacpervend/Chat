@@ -11,7 +11,6 @@ namespace Application.Mappings
             return new MapperConfiguration(config =>
             {
                 config.CreateMap<RegisterUserDTO, User>();
-
             })
             .CreateMapper();
         }

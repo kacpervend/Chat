@@ -15,6 +15,8 @@ namespace Application.Extensions
             services.AddScoped<IAuthService, AuthService>();
 
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
+            services.AddScoped<IChatService, ChatService>();
         }
     }
 }

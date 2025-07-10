@@ -1,10 +1,9 @@
 ﻿namespace Domain.Entities
 {
-    public class User
+    public class Chat
     {
-        public Guid Id { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
+        public Guid ChatId { get; set; }
+        public string Name { get; set; }
         public DateTime CreatedAt { get; set; }
         public ICollection<Message> Messages { get; set; }
     }
