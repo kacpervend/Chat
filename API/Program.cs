@@ -1,4 +1,6 @@
+using API.Hubs;
 using Application.Extensions;
+using Domain.Options;
 using Infrastructure.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -32,10 +34,27 @@ namespace API
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.FromSeconds(120)
                 };
+                options.Events = new JwtBearerEvents()
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["token"];
+                        var path = context.HttpContext.Request.Path;
+
+                        if(!string.IsNullOrEmpty(path) && path.StartsWithSegments("/messageHub"))
+                        {
+                            context.Token = accessToken;
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
             builder.Services.AddApplication();
             builder.Services.AddInfrastructure(builder.Configuration);
+
+            builder.Services.Configure<KafkaOption>(options => builder.Configuration.GetSection("Kafka").Bind(options));
 
             var origin = builder.Configuration.GetValue<string>("Origin") ?? throw new NullReferenceException("Empty origin!");
 
@@ -53,6 +72,8 @@ namespace API
                     });
             });
 
+            builder.Services.AddSignalR();
+
             var app = builder.Build();
 
             app.UseCors("CorsPolicy");
@@ -62,6 +83,8 @@ namespace API
             app.UseAuthentication();
 
             app.UseHttpsRedirection();
+
+            app.MapHub<MessageHub>("/messageHub");
 
             app.UseAuthorization();
 

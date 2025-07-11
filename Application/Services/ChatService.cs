@@ -1,18 +1,18 @@
 ﻿using Application.DTO;
 using Domain.Repositories;
-using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace Application.Services
 {
     public class ChatService : IChatService
     {
         private readonly IChatRepository _repository;
-        private readonly ILogger<ChatService> _logger;
+        private readonly IKafkaProducer _kafkaProducer;
 
-        public ChatService(IChatRepository repository, ILogger<ChatService> logger)
+        public ChatService(IChatRepository repository, IKafkaProducer kafkaProducer)
         {
             _repository = repository;
-            _logger = logger;
+            _kafkaProducer = kafkaProducer;
         }
 
         public async Task<ChatDTO> GetPaginatedChat(string chatName, int pageNumber, int pageSize)
@@ -31,11 +31,21 @@ namespace Application.Services
                                     Sender = x.Sender.Username,
                                     MessageText = x.MessageText,
                                     ChatId = chat.ChatId,
+                                    SenderId = x.SenderId,
                                     CreatedAt = x.CreatedAt
                                 }).ToHashSet()
             };
 
             return chatDTO;
+        }
+
+        public async Task SaveMessage(MessageDTO messageDTO)
+        {
+            await _kafkaProducer.Produce("Message", new Confluent.Kafka.Message<string, string>
+            {
+                Key = messageDTO.MessageId.ToString(),
+                Value = JsonSerializer.Serialize(messageDTO)
+            });
         }
     }
 }

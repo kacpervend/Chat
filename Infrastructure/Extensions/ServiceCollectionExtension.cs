@@ -1,5 +1,6 @@
 ﻿using Domain.Repositories;
 using Infrastructure.Data;
+using Infrastructure.Producer;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -21,6 +22,8 @@ namespace Infrastructure.Extensions
             services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddScoped<IChatRepository, ChatRepository>();
+
+            services.AddScoped<IKafkaProducer, KafkaProducer>();
         }
     }
 }
